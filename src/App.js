@@ -5,31 +5,22 @@ import { ethers } from "ethers";
 
 let provider = new ethers.providers.JsonRpcProvider();
 
-let abi = [
-  "event ValueChanged(address indexed author, string oldValue, string newValue)",
-  "constructor(string value)",
-  "function getValue() view returns (string value)",
-  "function setValue(string value)"
-];
 
-// The address from the above deployment example
-let contractAddress = "0x32922361532da24bef7456111f5dd51C176CaD57";
+// Numbers.Sol
+let abiJson = '[{"inputs":[{"internalType":"uint256","name":"x","type":"uint256"},{"internalType":"uint256","name":"y","type":"uint256"}],"name":"add","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"get","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]';
+let abi = JSON.parse(abiJson);
+
+let contractAddress = "0xDbA3e05E06fEd4b2B52a5828C50aD44448b27DDC";
 let contract = new ethers.Contract(contractAddress, abi, provider);
 
 function DisplayResult() {
-  // const photos = [];
   const [result, setResult] = React.useState('');
-
-
-
   const getContract = async () => {    
 
-    // console.log('contract ' + contract.outputs);
-    let currentValue = await contract.getValue();
+    let currentValue = await contract.get();
     console.log("getContract: " + currentValue.toString());
 
     setResult(currentValue.toString());
-    // return currentValue.toString();
     }
 
     useEffect(() => {
@@ -48,15 +39,26 @@ function DisplayResult() {
 
 function Intake(props) {
   const [phrase, setPhrase] = React.useState('');
+  const [firstNumber, setFirstNumber] = React.useState('');
+  const [secondNumber, setSecondNumber] = React.useState('');
 
+  // TODO condense handle methods into one
   const handleTextChange = (event) => {
     const value = event.target.value;
-    //setTextTitle(value);
     setPhrase(value);
-    console.log("value: " + value);
   };
 
-  const setContract = async (newPhrase) => {  
+  const handleFirstNumber = (event) => {
+    const value = event.target.value;
+    setFirstNumber(value);
+  };
+
+  const handleSecondNumber = (event) => {
+    const value = event.target.value;
+    setSecondNumber(value);
+  };
+
+  const setContract = async (x,y) => {  
   
     let privateKey = '0x1e867e710b420a9e4e5e16d192185c6b240ff54a522d2059d99947bcaa21928e';
     let wallet = new ethers.Wallet(privateKey, provider);
@@ -66,7 +68,7 @@ function Intake(props) {
     let contractWithSigner = contract.connect(wallet);
   
     // Set a new Value, which returns the transaction
-    let tx = await contractWithSigner.setValue(newPhrase);
+    let tx = await contractWithSigner.add(x, y);
   
     // See: https://ropsten.etherscan.io/tx/0xaf0068dcf728afa5accd02172867627da4e6f946dfb8174a7be31f01b11d5364
     console.log(tx.hash);
@@ -76,7 +78,7 @@ function Intake(props) {
     await tx.wait();
   
     // Call the Contract's getValue() method again
-    let newValue = await contract.getValue();
+    let newValue = await contract.get();
   
     console.log("newValue: " + newValue);
 
@@ -87,7 +89,7 @@ function Intake(props) {
     event.preventDefault();
 
 
-    setContract(phrase).then(() => props.onIntake("succeeded"));
+    setContract(firstNumber, secondNumber).then(() => props.onIntake("succeeded"));
 
     
   };
@@ -96,7 +98,7 @@ function Intake(props) {
     <div className="myDiv">
       <h1>Execute Smart Contract</h1>
       <form className = "form-c" action="/action_page.php" onSubmit={handleSubmit}>
-        <p> Phrase: <input type="text" onChange={handleTextChange}/> First Number: <input type="text"/> Second Number: <input type="text"/> </p>
+        <p> Phrase: <input type="text" onChange={handleTextChange}/> First Number: <input type="text" onChange={handleFirstNumber}/> Second Number: <input type="text" onChange={handleSecondNumber}/> </p>
         <input type="submit" value="Submit"/>        
       </form>
     </div>

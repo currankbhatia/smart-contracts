@@ -2,6 +2,7 @@
 
 ### Running the front end:
 `npm start`
+`node_modules/.bin/ganache-cli`
 
 
 Disclaimer:
