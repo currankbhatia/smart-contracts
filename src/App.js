@@ -10,7 +10,7 @@ let provider = new ethers.providers.JsonRpcProvider();
 let abiJson = '[{"inputs":[{"internalType":"uint256","name":"x","type":"uint256"},{"internalType":"uint256","name":"y","type":"uint256"}],"name":"add","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"get","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]';
 let abi = JSON.parse(abiJson);
 
-let contractAddress = "0xDbA3e05E06fEd4b2B52a5828C50aD44448b27DDC";
+let contractAddress = "0x42267ef0e0c1f1dae6541d638b1c69561e33cd59";
 let contract = new ethers.Contract(contractAddress, abi, provider);
 
 function DisplayResult() {
@@ -60,7 +60,7 @@ function Intake(props) {
 
   const setContract = async (x,y) => {  
   
-    let privateKey = '0x1e867e710b420a9e4e5e16d192185c6b240ff54a522d2059d99947bcaa21928e';
+    let privateKey = '0x3f0b5a65799d85a728e6a6c95e689ba90d75bace5f3be73bf7bb99f222df169a';
     let wallet = new ethers.Wallet(privateKey, provider);
   
     // Create a new instance of the Contract with a Signer, which allows
